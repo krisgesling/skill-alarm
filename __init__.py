@@ -77,8 +77,7 @@ except:
 
 class AlarmSkill(MycroftSkill):
     
-    beep_gap = 15       # seconds between end of a beep and the start of next
-                        # must be bigger than the max listening time (10 sec)
+    beep_gap = 5       # seconds between end of a beep and the start of next
         
     default_sound = "constant_beep"
     threshold = 0.7     # Threshold for word fuzzy matching
@@ -875,7 +874,8 @@ class AlarmSkill(MycroftSkill):
         return
 
     @intent_file_handler('snooze.intent')
-    def snooze_alarm(self, message):
+    def handle_snooze_alarm(self, message):
+        self.log.info(f'handle_snooze_alarm: Entered')
         if not self.has_expired_alarm():
             return
 
@@ -921,7 +921,7 @@ class AlarmSkill(MycroftSkill):
             if utterances and self.voc_match(utterances[0], "StopBeeping"):
                 # Stop the alarm
                 self._stop_expired_alarm()
-                return True  # and consume this phrase
+                #return True  # and consume this phrase
 
     def _play_beep(self, message=None):
         """ Play alarm sound file """
@@ -1011,7 +1011,8 @@ class AlarmSkill(MycroftSkill):
 
             # Notify all processes to update their loaded configs
             self.bus.emit(Message('configuration.updated'))
-            del self.settings["user_beep_setting"]
+            if 'user_beep_setting' in self.settings:
+                self.settings.pop("user_beep_setting")
 
     def _stop_expired_alarm(self):
         if self.has_expired_alarm():
