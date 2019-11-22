@@ -80,7 +80,7 @@ class AlarmSkill(MycroftSkill):
     beep_gap = 5       # seconds between end of a beep and the start of next
         
     default_sound = "constant_beep"
-    threshold = 0.7     # Threshold for word fuzzy matching
+    threshold = 0.8     # Threshold for word fuzzy matching
 
     def __init__(self):
         super(AlarmSkill, self).__init__()
@@ -759,6 +759,10 @@ class AlarmSkill(MycroftSkill):
         if (number and number > len(alarms)) or \
            (recur and not recurrence_matches) or \
            (when and not time_matches):
+            self.log.info(f'_get_alarm_matches: Match but not found?: {alarms}')
+            self.log.info(f'_get_alarm_matches: From number?: {number and number > len(alarms)}')
+            self.log.info(f'_get_alarm_matches: From recurrence?: {recur and not recurrence_matches}')
+            self.log.info(f'_get_alarm_matches: From time?: {when and not time_matches}')
             return (status[2], None)
         # If number of alarms filtered were the same, assume user asked for
         # All alarms    
