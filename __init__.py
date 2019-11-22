@@ -356,13 +356,9 @@ class AlarmSkill(MycroftSkill):
 
     # Wake me on ... (hard to match with Adapt entities)
     @intent_handler(IntentBuilder("").require("WakeMe").
-                    require("Recurring").optionally("Recurrence"))
+                    optionally("Recurring").optionally("Recurrence"))
     def handle_wake_me(self, message):
         self.handle_set_alarm(message)
-        
-    @intent_file_handler('wake.me.intent')
-    def handle_wake_me_simple(self, message):
-        self.handle_wake_me(message)
 
     def _create_day_set(self, phrase):
         recur = set()
