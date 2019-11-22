@@ -356,9 +356,13 @@ class AlarmSkill(MycroftSkill):
 
     # Wake me on ... (hard to match with Adapt entities)
     @intent_handler(IntentBuilder("").require("WakeMe").
-                    optionally("Recurring").optionally("Recurrence"))
+                    require("Recurring").optionally("Recurrence"))
     def handle_wake_me(self, message):
         self.handle_set_alarm(message)
+        
+    @intent_file_handler('wake.me.intent')
+    def handle_wake_me_simple(self, message):
+        self.handle_wake_me(message)
 
     def _create_day_set(self, phrase):
         recur = set()
@@ -388,7 +392,7 @@ class AlarmSkill(MycroftSkill):
         return join_list(day_names, self.translate('and'))
 
     # Set an alarm for ...
-    @intent_handler(IntentBuilder("").optionally("Set").require("Alarm").
+    @intent_handler(IntentBuilder("").require("Set").require("Alarm").
                     optionally("Recurring").optionally("Recurrence"))
     def handle_set_alarm(self, message):
         utt = message.data.get('utterance').lower()
@@ -520,6 +524,10 @@ class AlarmSkill(MycroftSkill):
 
         self._show_alarm_anim(alarm_time)
         self.enclosure.activate_mouth_events()
+
+    @intent_file_handler('set.alarm.intent')
+    def handle_set_alarm_simple(self, message):
+        self.handle_set_alarm(message)
     
     def _get_alarm_name(self, utt):
         """ Get the alarm name using regex on an utterance
